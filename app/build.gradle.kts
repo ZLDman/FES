@@ -57,4 +57,5 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
 }
