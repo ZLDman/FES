@@ -29,13 +29,12 @@ class MainActivity : AppCompatActivity() {
 
         statusText = findViewById(R.id.statusText)
         sendButton = findViewById(R.id.sendButton)
-        inputText = findViewById(R.id.inputText)
 
         Log.i(TAG, "=== App started ===")
         startBleConnection()
 
         sendButton.setOnClickListener {
-            val msg = inputText.text.toString()
+            val msg = "message"
             Log.i(TAG, "Send button clicked: $msg")
             sendMessage(msg)
         }
@@ -58,10 +57,10 @@ class MainActivity : AppCompatActivity() {
 
         Log.i(TAG, "Bluetooth adapter found: ${adapter.name}")
 
-        val device = adapter.bondedDevices.firstOrNull { it.name == "XIAO_UART" }
+        val device = adapter.bondedDevices.firstOrNull { it.name == "FES" }
         if (device == null) {
-            Log.w(TAG, "XIAO_UART not paired")
-            statusText.text = "XIAO_UART not paired"
+            Log.w(TAG, "FES not paired")
+            statusText.text = "FES not paired"
             return
         }
 
