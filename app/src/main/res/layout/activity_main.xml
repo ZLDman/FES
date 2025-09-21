@@ -66,7 +66,7 @@
                     android:textColor="#000" />
 
                 <Switch
-                    android:id="@+id/switch1"
+                    android:id="@+id/modeSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -95,12 +95,12 @@
                     android:textColor="#222" />
 
                 <SeekBar
-                    android:id="@+id/seekBar"
+                    android:id="@+id/ampBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:id="@+id/amplitudeValue"
+                    android:id="@+id/ampValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Value: 0"
@@ -133,12 +133,12 @@
                     android:textColor="#222" />
 
                 <SeekBar
-                    android:id="@+id/seekBar4"
+                    android:id="@+id/freqBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:id="@+id/frequencyValue"
+                    android:id="@+id/freqValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Value: 0"
@@ -171,12 +171,12 @@
                     android:textColor="#222" />
 
                 <SeekBar
-                    android:id="@+id/seekBar5"
+                    android:id="@+id/powBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:id="@+id/powerValue"
+                    android:id="@+id/powValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Value: 0"
@@ -223,11 +223,12 @@
                         android:textColor="#333" />
 
                     <SeekBar
-                        android:id="@+id/onSetSeekBar"
+                        android:id="@+id/onSetBar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="12dp"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:max="5" />
 
                     <TextView
                         android:id="@+id/onSetValue"
@@ -252,11 +253,12 @@
                         android:textColor="#333" />
 
                     <SeekBar
-                        android:id="@+id/offSetSeekBar"
+                        android:id="@+id/offSetBar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
                         android:layout_weight="1"
-                        android:layout_marginHorizontal="12dp"/>
+                        android:max="5" />
 
                     <TextView
                         android:id="@+id/offSetValue"

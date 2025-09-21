@@ -4,7 +4,8 @@ import android.bluetooth.*
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.UUID
@@ -21,17 +22,132 @@ class MainActivity : AppCompatActivity() {
     private var bluetoothGatt: BluetoothGatt? = null
     private lateinit var statusText: TextView
     private lateinit var sendButton: Button
-    private lateinit var inputText: EditText
+    private lateinit var modeSwitch: Switch
+
+    //slider bars
+    private lateinit var ampBar: SeekBar
+    private lateinit var freqBar: SeekBar
+    private lateinit var powBar: SeekBar
+    private lateinit var onSetBar: SeekBar
+    private lateinit var offSetBar: SeekBar
+
+    //Values
+    private lateinit var ampValue: TextView
+    private lateinit var freqValue: TextView
+    private lateinit var powValue: TextView
+    private lateinit var onSetValue: TextView
+    private lateinit var offSetValue: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         statusText = findViewById(R.id.statusText)
+
+        //switch
+        modeSwitch = findViewById(R.id.modeSwitch)
+
+        //sliders
+        ampBar = findViewById(R.id.ampBar)
+        freqBar = findViewById(R.id.freqBar)
+        powBar = findViewById(R.id.powBar)
+        onSetBar = findViewById(R.id.onSetBar)
+        offSetBar = findViewById(R.id.offSetBar)
+
+        //text Values:
+        ampValue = findViewById(R.id.ampValue)
+        freqValue = findViewById(R.id.freqValue)
+        powValue = findViewById(R.id.powValue)
+        onSetValue = findViewById(R.id.onSetValue)
+        offSetValue = findViewById(R.id.offSetValue)
+
+
+        //send Button
         sendButton = findViewById(R.id.sendButton)
 
         Log.i(TAG, "=== App started ===")
         startBleConnection()
+
+        ampBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                ampValue.text = "Value: $progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user starts dragging the thumb.
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user stops dragging the thumb.
+                // You can get the final value here if needed.
+                // val finalProgress = seekBar?.progress ?: 0
+            }
+        })
+
+        freqBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                freqValue.text = "Value: $progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user starts dragging the thumb.
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user stops dragging the thumb.
+                // You can get the final value here if needed.
+                // val finalProgress = seekBar?.progress ?: 0
+            }
+        })
+
+        powBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                powValue.text = "Value: $progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user starts dragging the thumb.
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user stops dragging the thumb.
+                // You can get the final value here if needed.
+                // val finalProgress = seekBar?.progress ?: 0
+            }
+        })
+
+        onSetBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                onSetValue.text = "$progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user starts dragging the thumb.
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user stops dragging the thumb.
+                // You can get the final value here if needed.
+                // val finalProgress = seekBar?.progress ?: 0
+            }
+        })
+
+        offSetBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                offSetValue.text = "$progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user starts dragging the thumb.
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // This method is called when the user stops dragging the thumb.
+                // You can get the final value here if needed.
+                // val finalProgress = seekBar?.progress ?: 0
+            }
+        })
 
         sendButton.setOnClickListener {
             val msg = "message"
