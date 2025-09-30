@@ -97,13 +97,14 @@
                 <SeekBar
                     android:id="@+id/ampBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:max="100"/>
 
                 <TextView
                     android:id="@+id/ampValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Value: 0"
+                    android:text="0mA"
                     android:gravity="end"
                     android:textColor="#333"
                     android:textSize="14sp" />
@@ -135,13 +136,14 @@
                 <SeekBar
                     android:id="@+id/freqBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:max="20"/>
 
                 <TextView
                     android:id="@+id/freqValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Value: 0"
+                    android:text="30Hz"
                     android:gravity="end"
                     android:textColor="#333"
                     android:textSize="14sp" />
@@ -173,13 +175,14 @@
                 <SeekBar
                     android:id="@+id/powBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:max="50"/>
 
                 <TextView
                     android:id="@+id/powValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Value: 0"
+                    android:text="250μs"
                     android:gravity="end"
                     android:textColor="#333"
                     android:textSize="14sp" />

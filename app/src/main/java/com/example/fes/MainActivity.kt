@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         ampBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                ampValue.text = "Value: $progress"
+                ampValue.text = "$progress" + "mA"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -87,7 +87,8 @@ class MainActivity : AppCompatActivity() {
 
         freqBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                freqValue.text = "Value: $progress"
+                val f = progress + 30
+                freqValue.text = "$f" + "Hz"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -103,7 +104,8 @@ class MainActivity : AppCompatActivity() {
 
         powBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                powValue.text = "Value: $progress"
+                val p = (progress * 5) + 250
+                powValue.text = "$p" + " μs"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -150,9 +152,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         sendButton.setOnClickListener {
-            val msg = "message"
-            Log.i(TAG, "Send button clicked: $msg")
-            sendMessage(msg)
+            val json = "{\"mode\": " + modeSwitch.isChecked + ",\"amp\": " + ampBar.progress + ",\"freq\": " + freqBar.progress + ",\"pow\": " + powBar.progress + ",\"on\": " + onSetBar.progress + ",\"off\": " + offSetBar.progress + " }"
+            Log.i(TAG, "Send button clicked: $json")
+            sendMessage(json)
         }
     }
 
