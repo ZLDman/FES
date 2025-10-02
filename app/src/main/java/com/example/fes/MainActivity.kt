@@ -1,6 +1,8 @@
 package com.example.fes
 
+import android.Manifest
 import android.bluetooth.*
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -8,7 +10,8 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import java.util.UUID
+import androidx.core.app.ActivityCompat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val UART_SERVICE_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
     private val TX_CHAR_UUID = UUID.fromString("6E400003-B5A3-F393-E0A9-E50E24DCCA9E") // Notify
     private val RX_CHAR_UUID = UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E") // Write
+    private val CCCD_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     private var bluetoothGatt: BluetoothGatt? = null
     private lateinit var statusText: TextView
@@ -38,14 +42,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var onSetValue: TextView
     private lateinit var offSetValue: TextView
 
+    private val PERMISSION_REQUEST_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         statusText = findViewById(R.id.statusText)
-
-        //switch
         modeSwitch = findViewById(R.id.modeSwitch)
 
         //sliders
@@ -55,110 +58,93 @@ class MainActivity : AppCompatActivity() {
         onSetBar = findViewById(R.id.onSetBar)
         offSetBar = findViewById(R.id.offSetBar)
 
-        //text Values:
+        //text Values
         ampValue = findViewById(R.id.ampValue)
         freqValue = findViewById(R.id.freqValue)
         powValue = findViewById(R.id.powValue)
         onSetValue = findViewById(R.id.onSetValue)
         offSetValue = findViewById(R.id.offSetValue)
 
-
-        //send Button
         sendButton = findViewById(R.id.sendButton)
 
         Log.i(TAG, "=== App started ===")
-        startBleConnection()
+        ensureBluetoothPermissions()
 
-        ampBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                ampValue.text = "$progress" + "mA"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user starts dragging the thumb.
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user stops dragging the thumb.
-                // You can get the final value here if needed.
-                // val finalProgress = seekBar?.progress ?: 0
-            }
+        // listeners
+        ampBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
+            ampValue.text = "$progress mA"
         })
 
-        freqBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val f = progress + 30
-                freqValue.text = "$f" + "Hz"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user starts dragging the thumb.
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user stops dragging the thumb.
-                // You can get the final value here if needed.
-                // val finalProgress = seekBar?.progress ?: 0
-            }
+        freqBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
+            val f = progress + 30
+            freqValue.text = "$f Hz"
         })
 
-        powBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val p = (progress * 5) + 250
-                powValue.text = "$p" + " μs"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user starts dragging the thumb.
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user stops dragging the thumb.
-                // You can get the final value here if needed.
-                // val finalProgress = seekBar?.progress ?: 0
-            }
+        powBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
+            val p = (progress * 5) + 250
+            powValue.text = "$p μs"
         })
 
-        onSetBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                onSetValue.text = "$progress"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user starts dragging the thumb.
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user stops dragging the thumb.
-                // You can get the final value here if needed.
-                // val finalProgress = seekBar?.progress ?: 0
-            }
+        onSetBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
+            onSetValue.text = "$progress"
         })
 
-        offSetBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                offSetValue.text = "$progress"
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user starts dragging the thumb.
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // This method is called when the user stops dragging the thumb.
-                // You can get the final value here if needed.
-                // val finalProgress = seekBar?.progress ?: 0
-            }
+        offSetBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
+            offSetValue.text = "$progress"
         })
 
         sendButton.setOnClickListener {
-            val json = "{\"mode\": " + modeSwitch.isChecked + ",\"amp\": " + ampBar.progress + ",\"freq\": " + freqBar.progress + ",\"pow\": " + powBar.progress + ",\"on\": " + onSetBar.progress + ",\"off\": " + offSetBar.progress + " }"
+            val f = freqBar.progress + 30
+            val p = (powBar.progress * 5) + 250
+            val json =
+                "{\"mode\": ${modeSwitch.isChecked},\"amp\": ${ampBar.progress},\"freq\": ${f},\"pow\": ${p},\"on\": ${onSetBar.progress},\"off\": ${offSetBar.progress} }"
             Log.i(TAG, "Send button clicked: $json")
             sendMessage(json)
         }
     }
 
-    /** Step 1: Start BLE connection directly (no runtime perms on Android 8.1) */
+    private fun makeSeekListener(onChange: (Int) -> Unit) =
+        object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                onChange(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        }
+
+    /** Step 1: Check runtime permissions (Android 12+) */
+    private fun ensureBluetoothPermissions() {
+        val neededPerms = mutableListOf<String>()
+
+        if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            neededPerms.add(Manifest.permission.BLUETOOTH_CONNECT)
+        }
+        if (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            neededPerms.add(Manifest.permission.BLUETOOTH_SCAN)
+        }
+
+        if (neededPerms.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, neededPerms.toTypedArray(), PERMISSION_REQUEST_CODE)
+        } else {
+            startBleConnection()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+            startBleConnection()
+        } else {
+            statusText.text = "Bluetooth permissions denied"
+        }
+    }
+
+    /** Step 2: Start BLE connection */
     private fun startBleConnection() {
         val adapter = BluetoothAdapter.getDefaultAdapter()
         if (adapter == null) {
@@ -185,11 +171,20 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "Found paired device: ${device.name} (${device.address})")
         statusText.text = "Connecting to ${device.name}..."
 
-        bluetoothGatt = device.connectGatt(this, false, gattCallback)
+        bluetoothGatt = if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            device.connectGatt(this, false, gattCallback, BluetoothDevice.TRANSPORT_LE)
+        } else {
+            Log.e(TAG, "Missing BLUETOOTH_CONNECT permission!")
+            null
+        }
         Log.i(TAG, "connectGatt() returned: $bluetoothGatt")
     }
 
-    /** Step 2: GATT callbacks */
+    /** Step 3: GATT callbacks */
     private val gattCallback = object : BluetoothGattCallback() {
 
         init {
@@ -204,10 +199,12 @@ class MainActivity : AppCompatActivity() {
                     gatt?.discoverServices()
                     runOnUiThread { statusText.text = "Connected to ${gatt?.device?.name}" }
                 }
+
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.i(TAG, "Disconnected from device")
                     runOnUiThread { statusText.text = "Disconnected" }
                 }
+
                 else -> {
                     Log.i(TAG, "Connection state changed: $newState")
                 }
@@ -231,8 +228,13 @@ class MainActivity : AppCompatActivity() {
 
             val txChar = service.getCharacteristic(TX_CHAR_UUID)
             if (txChar != null) {
-                val success = gatt.setCharacteristicNotification(txChar, true)
-                Log.i(TAG, "TX characteristic found, notifications enabled: $success")
+                gatt.setCharacteristicNotification(txChar, true)
+                val descriptor = txChar.getDescriptor(CCCD_UUID)
+                descriptor?.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                if (descriptor != null) {
+                    gatt.writeDescriptor(descriptor)
+                    Log.i(TAG, "TX notifications enabled with CCCD write")
+                }
             } else {
                 Log.w(TAG, "TX characteristic not found")
             }
@@ -241,7 +243,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?
         ) {
             if (characteristic?.uuid == TX_CHAR_UUID) {
                 val msg = characteristic.getStringValue(0)
@@ -251,7 +254,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Step 3: Send messages */
+    /** Step 4: Send messages */
     private fun sendMessage(msg: String) {
         val service = bluetoothGatt?.getService(UART_SERVICE_UUID)
         val rxChar = service?.getCharacteristic(RX_CHAR_UUID)
