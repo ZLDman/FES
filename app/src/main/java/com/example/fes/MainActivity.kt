@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             val f = freqBar.progress + 30
             val p = (powBar.progress * 5) + 250
             val json =
-                "{\"mode\": ${modeSwitch.isChecked},\"amp\": ${ampBar.progress},\"freq\": ${f},\"pow\": ${p},\"on\": ${onSetBar.progress},\"off\": ${offSetBar.progress} }"
+                "{${modeSwitch.isChecked},${ampBar.progress},${f},${p},${onSetBar.progress},${offSetBar.progress}}"
             Log.i(TAG, "Send button clicked: $json")
             sendMessage(json)
         }

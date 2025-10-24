@@ -150,7 +150,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Power -->
+        <!-- Pulse Width -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Power"
+                    android:text="Pulse Width"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#222" />
