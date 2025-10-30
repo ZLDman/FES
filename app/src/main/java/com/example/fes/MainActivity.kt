@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDialogListener {
 
     private val TAG = "BLETestVerbose"
 
@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var powValue: TextView
     private lateinit var onSetValue: TextView
     private lateinit var offSetValue: TextView
+    private lateinit var editConfigButton: Button
 
     private val PERMISSION_REQUEST_CODE = 1001
 
@@ -51,13 +52,6 @@ class MainActivity : AppCompatActivity() {
         statusText = findViewById(R.id.statusText)
         modeSwitch = findViewById(R.id.modeSwitch)
 
-        //sliders
-        ampBar = findViewById(R.id.ampBar)
-        freqBar = findViewById(R.id.freqBar)
-        powBar = findViewById(R.id.powBar)
-        onSetBar = findViewById(R.id.onSetBar)
-        offSetBar = findViewById(R.id.offSetBar)
-
         //text Values
         ampValue = findViewById(R.id.ampValue)
         freqValue = findViewById(R.id.freqValue)
@@ -65,42 +59,68 @@ class MainActivity : AppCompatActivity() {
         onSetValue = findViewById(R.id.onSetValue)
         offSetValue = findViewById(R.id.offSetValue)
 
-        sendButton = findViewById(R.id.sendButton)
+        editConfigButton = findViewById(R.id.editConfigButton)
 
         Log.i(TAG, "=== App started ===")
         ensureBluetoothPermissions()
 
-        // listeners
-        ampBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
-            ampValue.text = "$progress mA"
-        })
-
-        freqBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
-            val f = progress + 30
-            freqValue.text = "$f Hz"
-        })
-
-        powBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
-            val p = (progress * 5) + 250
-            powValue.text = "$p μs"
-        })
-
-        onSetBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
-            onSetValue.text = "$progress"
-        })
-
-        offSetBar.setOnSeekBarChangeListener(makeSeekListener { progress ->
-            offSetValue.text = "$progress"
-        })
-
-        sendButton.setOnClickListener {
-            val f = freqBar.progress + 30
-            val p = (powBar.progress * 5) + 250
-            val json =
-                "{${modeSwitch.isChecked},${ampBar.progress},${f},${p},${onSetBar.progress},${offSetBar.progress}}"
-            Log.i(TAG, "Send button clicked: $json")
-            sendMessage(json)
+        // Set click listener for the edit button
+        editConfigButton.setOnClickListener {
+            showEditDialog()
         }
+
+        modeSwitch.setOnClickListener() {
+            val isChecked = modeSwitch.isChecked
+            Log.i(TAG, "Sending: $isChecked")
+            sendMessage(isChecked.toString())
+        }
+    }
+
+    private fun showEditDialog() {
+        val dialogFragment = EditConfigDialogFragment()
+
+        // Pass current values to the dialog using a Bundle
+        val args = Bundle().apply {
+            // Safely parse the current text to an Int
+            val currentAmp = ampValue.text.toString().replace("mA", "").trim().toIntOrNull() ?: 0
+            val currentFreq = freqValue.text.toString().replace("Hz", "").trim().toIntOrNull() ?: 0
+            val currentPower = powValue.text.toString().replace("μs", "").trim().toIntOrNull() ?: 0
+            val currentOn = onSetValue.text.toString().trim().toIntOrNull() ?: 0
+            val currentOff = offSetValue.text.toString().trim().toIntOrNull() ?: 0
+
+
+
+            putInt("amplitude", currentAmp)
+            putInt("frequency", currentFreq)
+            putInt("power", currentPower)
+            putInt("on", currentOn)
+            putInt("off", currentOff)
+        }
+        dialogFragment.arguments = args
+
+        // Show the dialog
+        dialogFragment.show(supportFragmentManager, "EditConfigDialogFragment")
+    }
+
+    // This method is called when the dialog's "Save" button is clicked
+    override fun onFinishEditDialog(amplitude: Int, frequency: Int, power: Int, on: Int, off: Int) {
+        // Update the TextViews in MainActivity with the new values
+        val f = frequency + 30
+        val p = power * 5 + 250
+        val on2 = on - 5
+        val off2 = off - 5
+        ampValue.text = "$amplitude mA"
+        freqValue.text = "$f Hz"
+        powValue.text = "$p μs"
+        onSetValue.text = "$on2"
+        offSetValue.text = "$off2"
+
+
+        val json =
+            "{${amplitude},${f},${p},${on2},${off2}}"
+        Log.i(TAG, "Sending: $json")
+        sendMessage(json)
+        // You would also update the SeekBars' progress here if needed
     }
 
     private fun makeSeekListener(onChange: (Int) -> Unit) =

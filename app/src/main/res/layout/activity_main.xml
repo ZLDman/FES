@@ -38,6 +38,11 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
+                <Button
+                    android:id="@+id/editConfigButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -45,254 +50,222 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="6dp"
+            android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
-            android:layout_marginBottom="16dp">
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp"
+                android:padding="20dp"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Mode"
-                    android:textSize="18sp"
+                    android:text="Mode (On/Off)"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#000" />
 
+                <!-- Larger toggle switch area for tablet use -->
                 <Switch
                     android:id="@+id/modeSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Amplitude -->
-        <androidx.cardview.widget.CardView
+        <!-- 2x2 Grid for the next 4 cards -->
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="16dp">
+            android:columnCount="2"
+            android:rowCount="2"
+            android:columnOrderPreserved="false"
+            android:useDefaultMargins="true">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- Amplitude -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Amplitude"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#222" />
-
-                <SeekBar
-                    android:id="@+id/ampBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="100"/>
-
-                <TextView
-                    android:id="@+id/ampValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="0mA"
-                    android:gravity="end"
-                    android:textColor="#333"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Frequency -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Frequency"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#222" />
-
-                <SeekBar
-                    android:id="@+id/freqBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="20"/>
-
-                <TextView
-                    android:id="@+id/freqValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="30Hz"
-                    android:gravity="end"
-                    android:textColor="#333"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Pulse Width -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Pulse Width"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#222" />
-
-                <SeekBar
-                    android:id="@+id/powBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="50"/>
-
-                <TextView
-                    android:id="@+id/powValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="250μs"
-                    android:gravity="end"
-                    android:textColor="#333"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Stimulation Timing -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Stimulation Timing"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#222"
-                    android:layout_marginBottom="8dp"/>
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:layout_margin="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="On Set:"
-                        android:textSize="14sp"
-                        android:textColor="#333" />
-
-                    <SeekBar
-                        android:id="@+id/onSetBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_weight="1"
-                        android:max="5" />
+                        android:text="Amplitude"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#222" />
 
                     <TextView
-                        android:id="@+id/onSetValue"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/ampValue"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#333" />
+                        android:text="0mA"
+                        android:gravity="end"
+                        android:textColor="#333"
+                        android:textSize="16sp" />
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Frequency -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:layout_margin="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="12dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Off Set:"
-                        android:textSize="14sp"
-                        android:textColor="#333" />
-
-                    <SeekBar
-                        android:id="@+id/offSetBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_weight="1"
-                        android:max="5" />
+                        android:text="Frequency"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#222" />
 
                     <TextView
-                        android:id="@+id/offSetValue"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/freqValue"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#333" />
+                        android:text="30Hz"
+                        android:gravity="end"
+                        android:textColor="#333"
+                        android:textSize="16sp" />
                 </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-        <!-- Send Button -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- Pulse Width -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:layout_margin="8dp">
 
-                <Button
-                    android:id="@+id/sendButton"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Send" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pulse Width"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#222" />
+
+                    <TextView
+                        android:id="@+id/powValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="250μs"
+                        android:gravity="end"
+                        android:textColor="#333"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Stimulation Timing -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:layout_margin="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Stimulation Timing"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#222"
+                        android:layout_marginBottom="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="On Set:"
+                            android:textSize="16sp"
+                            android:textColor="#333" />
+
+                        <TextView
+                            android:id="@+id/onSetValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#333" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Cut Out:"
+                            android:textColor="#333"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/offSetValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#333" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
 
     </LinearLayout>
 </ScrollView>
