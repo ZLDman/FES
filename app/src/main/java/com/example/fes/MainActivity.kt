@@ -12,6 +12,21 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import java.util.*
+import android.content.Context
+import androidx.activity.result.launch
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+
+
+// Create a DataStore instance at the top level
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDialogListener {
 
@@ -74,6 +89,35 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
             Log.i(TAG, "Sending: $isChecked")
             sendMessage(isChecked.toString())
         }
+
+        lifecycleScope.launch {
+            val amp = readValue(this@MainActivity, "amplitude", "0")
+            val freq = readValue(this@MainActivity, "frequency", "30")
+            val pow = readValue(this@MainActivity, "power", "250")
+            val on = readValue(this@MainActivity, "on", "0")
+            val off = readValue(this@MainActivity, "off", "0")
+
+            ampValue.text = "$amp mA"
+            freqValue.text = "$freq Hz"
+            powValue.text = "$pow μs"
+            onSetValue.text = "$on"
+            offSetValue.text = "$off"
+        }
+    }
+
+    private suspend fun saveValue(context: Context, key: String, value: String) {
+        context.dataStore.edit { settings ->
+            // Define the key
+            val dataStoreKey = stringPreferencesKey(key)
+            // Put the value
+            settings[dataStoreKey] = value
+        }
+    }
+
+    private suspend fun readValue(context: Context, key: String, defaultValue: String): String? {
+        val dataStoreKey = stringPreferencesKey(key)
+        val preferences = context.dataStore.data.first()
+        return preferences[dataStoreKey] ?: defaultValue
     }
 
     private fun showEditDialog() {
@@ -115,6 +159,14 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
         onSetValue.text = "$on2"
         offSetValue.text = "$off2"
 
+        // Launch a coroutine to save the values
+        lifecycleScope.launch {
+            saveValue(this@MainActivity, "amplitude", amplitude.toString())
+            saveValue(this@MainActivity, "frequency", f.toString())
+            saveValue(this@MainActivity, "power", p.toString())
+            saveValue(this@MainActivity, "on", on2.toString())
+            saveValue(this@MainActivity, "off", off2.toString())
+        }
 
         val json =
             "{${amplitude},${f},${p},${on2},${off2}}"
