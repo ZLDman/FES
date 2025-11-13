@@ -13,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import java.util.*
 import android.content.Context
+import android.widget.LinearLayout
 import androidx.activity.result.launch
+import android.graphics.Color
+import android.widget.ImageView
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -31,6 +34,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDialogListener {
 
     private val TAG = "BLETestVerbose"
+    private val messageBuffer = StringBuilder()
 
     // Bluefruit UART UUIDs
     private val UART_SERVICE_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
@@ -40,15 +44,13 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
 
     private var bluetoothGatt: BluetoothGatt? = null
     private lateinit var statusText: TextView
-    private lateinit var sendButton: Button
     private lateinit var modeSwitch: Switch
 
-    //slider bars
-    private lateinit var ampBar: SeekBar
-    private lateinit var freqBar: SeekBar
-    private lateinit var powBar: SeekBar
-    private lateinit var onSetBar: SeekBar
-    private lateinit var offSetBar: SeekBar
+    private lateinit var stimStatusLayout: LinearLayout
+    private lateinit var stimStatusText: TextView
+
+    private lateinit var rotationImage: ImageView
+
 
     //Values
     private lateinit var ampValue: TextView
@@ -74,6 +76,14 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
         onSetValue = findViewById(R.id.onSetValue)
         offSetValue = findViewById(R.id.offSetValue)
 
+        stimStatusLayout = findViewById(R.id.stimStatusLayout)
+        stimStatusText = findViewById(R.id.StimStatusText)
+        stimStatusText.text = "STIM OFF"
+        stimStatusLayout.setBackgroundColor(Color.parseColor("#FF0000")) // Green
+
+        rotationImage = findViewById(R.id.rotationImage)
+
+
         editConfigButton = findViewById(R.id.editConfigButton)
 
         Log.i(TAG, "=== App started ===")
@@ -87,7 +97,10 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
         modeSwitch.setOnClickListener() {
             val isChecked = modeSwitch.isChecked
             Log.i(TAG, "Sending: $isChecked")
-            sendMessage(isChecked.toString())
+            if(isChecked)
+                sendMessage("T")
+            else
+                sendMessage("F")
         }
 
         lifecycleScope.launch {
@@ -319,12 +332,71 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
             characteristic: BluetoothGattCharacteristic?
         ) {
             if (characteristic?.uuid == TX_CHAR_UUID) {
-                val msg = characteristic.getStringValue(0)
-                Log.i(TAG, "Received message: $msg")
-                runOnUiThread { statusText.text = "Recv: $msg" }
+                val incomingData = characteristic.getStringValue(0)
+                Log.d(TAG, "Chunk received: '$incomingData'")
+
+                // Check for the newline delimiter
+                if (incomingData.contains("\n")) {
+                    // Append the last part of the message (before the newline)
+                    messageBuffer.append(incomingData.substringBefore("\n"))
+
+                    val completeMessage = messageBuffer.toString().trim()
+                    Log.i(TAG, "Complete message assembled: '$completeMessage'")
+
+                    // Now that we have the full message, process it on the UI thread
+                    runOnUiThread {
+                        processCompleteMessage(completeMessage)
+                    }
+
+                    // Clear the buffer for the next message
+                    messageBuffer.clear()
+
+                    // If there's data after the newline, start the next message with it
+                    val remainder = incomingData.substringAfter("\n", "")
+                    if (remainder.isNotEmpty()) {
+                        messageBuffer.append(remainder)
+                    }
+
+                } else {
+                    // If no delimiter, just append the chunk to the buffer
+                    messageBuffer.append(incomingData)
+                }
             }
         }
     }
+
+    private fun processCompleteMessage(message: String) {
+        when {
+            // Case 1: Handle STIM ON message
+            message == "T" -> {
+                Log.i(TAG, "Stimulation is ON")
+                stimStatusLayout.setBackgroundColor(Color.parseColor("#00FF00")) // Green
+                stimStatusText.text = "STIM ON"
+            }
+
+            // Case 2: Handle STIM OFF message
+            message == "F" -> {
+                Log.i(TAG, "Stimulation is OFF")
+                stimStatusLayout.setBackgroundColor(Color.parseColor("#FF0000")) // Red
+                stimStatusText.text = "STIM OFF"
+            }
+
+            // Case 3: Handle ANGLE message (e.g., "A90", "A180.5")
+            message.startsWith("A") -> {
+                val angleString = message.substring(1)
+                val angle = angleString.toFloatOrNull() ?: 0.0f
+                rotationImage.rotation = angle // Set rotation directly
+                Log.d(TAG, "Angle set to: $angle")
+            }
+
+            // Optional: Handle other messages or log unknown messages
+            else -> {
+                Log.w(TAG, "Received unknown message: '$message'")
+                statusText.text = "Recv: $message"
+            }
+        }
+    }
+
 
     /** Step 4: Send messages */
     private fun sendMessage(msg: String) {
