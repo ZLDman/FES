@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.fes"
+    namespace = "com.example.sco"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.fes"
+        applicationId = "com.example.sco"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

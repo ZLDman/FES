@@ -1,4 +1,4 @@
-package com.example.fes.ui.theme
+package com.example.sco.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

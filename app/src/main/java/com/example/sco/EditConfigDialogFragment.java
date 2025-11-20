@@ -1,4 +1,4 @@
-package com.example.fes;
+package com.example.sco;
 
 import android.app.Dialog;
 import android.os.Bundle;

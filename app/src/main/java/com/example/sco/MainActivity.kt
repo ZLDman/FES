@@ -1,4 +1,4 @@
-package com.example.fes
+package com.example.sco
 
 import android.Manifest
 import android.bluetooth.*
@@ -14,7 +14,6 @@ import androidx.core.app.ActivityCompat
 import java.util.*
 import android.content.Context
 import android.widget.LinearLayout
-import androidx.activity.result.launch
 import android.graphics.Color
 import android.widget.ImageView
 import androidx.datastore.core.DataStore
@@ -24,7 +23,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
