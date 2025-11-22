@@ -168,12 +168,12 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
         val lockKneeAngleRateThreshold = lockKneeAngleRateThreshold
         val lockTime = lockTime
 
-        stepTiltThresholdValue.text = "$stepTiltThreshold mA"
-        stepTiltRateThresholdValue.text = "$stepTiltRateThreshold Hz"
-        lockTiltThresholdValue.text = "$lockTiltThreshold μs"
-        lockKneeAngleThresholdValue.text = "$lockKneeAngleThreshold"
-        lockKneeAngleRateThresholdValue.text = "$lockKneeAngleRateThreshold"
-        lockTimeValue.text = "$lockTime"
+        stepTiltThresholdValue.text = "$stepTiltThreshold deg"
+        stepTiltRateThresholdValue.text = "$stepTiltRateThreshold deg/sec"
+        lockTiltThresholdValue.text = "$lockTiltThreshold deg"
+        lockKneeAngleThresholdValue.text = "$lockKneeAngleThreshold deg"
+        lockKneeAngleRateThresholdValue.text = "$lockKneeAngleRateThreshold deg/sec"
+        lockTimeValue.text = "$lockTime ms"
 
         // Launch a coroutine to save the values
         lifecycleScope.launch {
