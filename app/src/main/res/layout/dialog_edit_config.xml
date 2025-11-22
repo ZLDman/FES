@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Amplitude -->
+        <!-- Step Initiation Thresholds -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,29 +27,53 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Amplitude"
+                    android:text="Step Initiation Thresholds"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#222" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Step Thigh Tilt -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Thigh Tilt"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#222" />
 
                 <SeekBar
-                    android:id="@+id/dialogAmpBar"
+                    android:id="@+id/dialogStepTiltThreshold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:max="100"/>
 
                 <TextView
-                    android:id="@+id/dialogAmpValue"
+                    android:id="@+id/dialogStepTiltThresholdValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="0mA"
+                    android:text="0deg"
                     android:gravity="end"
                     android:textColor="#333"
                     android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Frequency -->
+        <!-- Step Thigh Tilt Rate -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,29 +90,29 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Frequency"
+                    android:text="Thigh Tilt Rate"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#222" />
 
                 <SeekBar
-                    android:id="@+id/dialogFreqBar"
+                    android:id="@+id/dialogStepTiltRateThreshold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:max="20"/>
 
                 <TextView
-                    android:id="@+id/dialogFreqValue"
+                    android:id="@+id/dialogStepTiltRateThresholdValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="30Hz"
+                    android:text="0deg/sec"
                     android:gravity="end"
                     android:textColor="#333"
                     android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Pulse Width -->
+        <!-- Knee Lock Thresholds -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,35 +129,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Pulse Width"
+                    android:text="Knee Lock Thresholds"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#222" />
-
-                <SeekBar
-                    android:id="@+id/dialogPowBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="50"/>
-
-                <TextView
-                    android:id="@+id/dialogPowValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="0μs"
-                    android:gravity="end"
-                    android:textColor="#333"
-                    android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Stimulation Timing -->
+        <!-- Thigh Tilt -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp">
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp"
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,72 +153,145 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Stimulation Timing"
+                    android:text="Thigh Tilt"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#222"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="#222" />
 
-                <LinearLayout
+                <SeekBar
+                    android:id="@+id/dialogLockTiltThreshold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:max="50"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="On Set:"
-                        android:textSize="14sp"
-                        android:textColor="#333" />
-
-                    <SeekBar
-                        android:id="@+id/dialogOnSetBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_weight="1"
-                        android:max="10" />
-
-                    <TextView
-                        android:id="@+id/dialogOnSetValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#333" />
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/dialogLockTiltThresholdValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="12dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cut Out:"
-                        android:textSize="14sp"
-                        android:textColor="#333" />
-
-                    <SeekBar
-                        android:id="@+id/dialogOffSetBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_weight="1"
-                        android:max="10" />
-
-                    <TextView
-                        android:id="@+id/dialogOffSetValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#333" />
-                </LinearLayout>
+                    android:text="0deg"
+                    android:gravity="end"
+                    android:textColor="#333"
+                    android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <!-- Knee Angle -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Knee Angle"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#222" />
+
+                <SeekBar
+                    android:id="@+id/dialogLockKneeAngleThreshold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"/>
+
+                <TextView
+                    android:id="@+id/dialogLockKneeAngleThresholdValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0deg"
+                    android:gravity="end"
+                    android:textColor="#333"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Knee Angle Rate -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Knee Angle Rate"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#222" />
+
+                <SeekBar
+                    android:id="@+id/dialogLockKneeAngleRateThreshold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="20"/>
+
+                <TextView
+                    android:id="@+id/dialogLockKneeAngleRateThresholdValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0deg/sec"
+                    android:gravity="end"
+                    android:textColor="#333"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Lock Timeout -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lock Timeout"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#222" />
+
+                <SeekBar
+                    android:id="@+id/dialogLockTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="50"/>
+
+                <TextView
+                    android:id="@+id/dialogLockTimeValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0deg"
+                    android:gravity="end"
+                    android:textColor="#333"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 
     </LinearLayout>
 </ScrollView>

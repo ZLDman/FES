@@ -51,11 +51,15 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
 
 
     //Values
-    private lateinit var ampValue: TextView
-    private lateinit var freqValue: TextView
-    private lateinit var powValue: TextView
-    private lateinit var onSetValue: TextView
-    private lateinit var offSetValue: TextView
+    //Step Initiaion Thresholds
+    private lateinit var stepTiltThresholdValue: TextView
+    private lateinit var stepTiltRateThresholdValue: TextView
+
+    //Knee Lock Thresholds
+    private lateinit var lockTiltThresholdValue: TextView
+    private lateinit var lockKneeAngleThresholdValue: TextView
+    private lateinit var lockKneeAngleRateThresholdValue: TextView
+    private lateinit var lockTimeValue: TextView
     private lateinit var editConfigButton: Button
 
     private val PERMISSION_REQUEST_CODE = 1001
@@ -65,14 +69,15 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
         setContentView(R.layout.activity_main)
 
         statusText = findViewById(R.id.statusText)
-        modeSwitch = findViewById(R.id.modeSwitch)
 
         //text Values
-        ampValue = findViewById(R.id.ampValue)
-        freqValue = findViewById(R.id.freqValue)
-        powValue = findViewById(R.id.powValue)
-        onSetValue = findViewById(R.id.onSetValue)
-        offSetValue = findViewById(R.id.offSetValue)
+        stepTiltThresholdValue = findViewById(R.id.dialogStepTiltThresholdValue)
+        stepTiltRateThresholdValue = findViewById(R.id.dialogStepTiltRateThresholdValue)
+        lockTiltThresholdValue = findViewById(R.id.dialogLockTiltThresholdValue)
+        lockKneeAngleThresholdValue = findViewById(R.id.dialogLockKneeAngleThresholdValue)
+        lockKneeAngleRateThresholdValue = findViewById(R.id.dialogLockKneeAngleRateThresholdValue)
+        lockTimeValue = findViewById(R.id.dialogLockTimeValue)
+
 
         stimStatusLayout = findViewById(R.id.stimStatusLayout)
         stimStatusText = findViewById(R.id.StimStatusText)
@@ -92,27 +97,23 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
             showEditDialog()
         }
 
-        modeSwitch.setOnClickListener() {
-            val isChecked = modeSwitch.isChecked
-            Log.i(TAG, "Sending: $isChecked")
-            if(isChecked)
-                sendMessage("T")
-            else
-                sendMessage("F")
-        }
+
 
         lifecycleScope.launch {
-            val amp = readValue(this@MainActivity, "amplitude", "0")
-            val freq = readValue(this@MainActivity, "frequency", "30")
-            val pow = readValue(this@MainActivity, "power", "250")
-            val on = readValue(this@MainActivity, "on", "0")
-            val off = readValue(this@MainActivity, "off", "0")
+            val stepTilt = readValue(this@MainActivity, "stepTiltThreshold", "0")
+            val stepTiltRate = readValue(this@MainActivity, "stepTiltRateThreshold", "0")
+            val lockTilt = readValue(this@MainActivity, "lockTiltThreshold", "0")
+            val lockKnee = readValue(this@MainActivity, "lockKneeAngleThreshold", "0")
+            val lockKneeRate = readValue(this@MainActivity, "lockKneeAngleRateThreshold", "0")
+            val lockTime = readValue(this@MainActivity, "lockTime", "0")
 
-            ampValue.text = "$amp mA"
-            freqValue.text = "$freq Hz"
-            powValue.text = "$pow μs"
-            onSetValue.text = "$on"
-            offSetValue.text = "$off"
+
+            stepTiltThresholdValue.text = "$stepTilt deg"
+            stepTiltRateThresholdValue.text = "$stepTiltRate deg/sec"
+            lockTiltThresholdValue.text = "$lockTilt deg"
+            lockKneeAngleThresholdValue.text = "$lockKnee deg"
+            lockKneeAngleRateThresholdValue.text = "$lockKneeRate deg/sec"
+            lockTimeValue.text = "$lockTime ms"
         }
     }
 
@@ -137,19 +138,19 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
         // Pass current values to the dialog using a Bundle
         val args = Bundle().apply {
             // Safely parse the current text to an Int
-            val currentAmp = ampValue.text.toString().replace("mA", "").trim().toIntOrNull() ?: 0
-            val currentFreq = freqValue.text.toString().replace("Hz", "").trim().toIntOrNull() ?: 0
-            val currentPower = powValue.text.toString().replace("μs", "").trim().toIntOrNull() ?: 0
-            val currentOn = onSetValue.text.toString().trim().toIntOrNull() ?: 0
-            val currentOff = offSetValue.text.toString().trim().toIntOrNull() ?: 0
+            val stepTilt = stepTiltThresholdValue.text.toString().replace("deg", "").trim().toIntOrNull() ?: 0
+            val stepTiltRate = stepTiltRateThresholdValue.text.toString().replace("deg/sec", "").trim().toIntOrNull() ?: 0
+            val lockTilt = lockTiltThresholdValue.text.toString().replace("deg", "").trim().toIntOrNull() ?: 0
+            val lockKnee = lockKneeAngleThresholdValue.text.toString().replace("deg", "").trim().toIntOrNull() ?: 0
+            val lockKneeRate = lockKneeAngleRateThresholdValue.text.toString().replace("deg/sec", "").trim().toIntOrNull() ?: 0
+            val lockTime = lockTimeValue.text.toString().replace("ms", "").trim().toIntOrNull() ?: 0
 
-
-
-            putInt("amplitude", currentAmp)
-            putInt("frequency", currentFreq)
-            putInt("power", currentPower)
-            putInt("on", currentOn)
-            putInt("off", currentOff)
+            putInt("stepTiltThreshold", stepTilt)
+            putInt("stepTiltRateThreshold", stepTiltRate)
+            putInt("lockTiltThreshold", lockTilt)
+            putInt("lockKneeAngleThreshold", lockKnee)
+            putInt("lockKneeAngleRateThreshold", lockKneeRate)
+            putInt("lockTime", lockTime)
         }
         dialogFragment.arguments = args
 
@@ -158,29 +159,34 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
     }
 
     // This method is called when the dialog's "Save" button is clicked
-    override fun onFinishEditDialog(amplitude: Int, frequency: Int, power: Int, on: Int, off: Int) {
+    override fun onFinishEditDialog(stepTiltThreshold: Int, stepTiltRateThreshold: Int, lockTiltThreshold: Int, lockKneeAngleThreshold: Int, lockKneeAngleRateThreshold: Int, lockTime: Int) {
         // Update the TextViews in MainActivity with the new values
-        val f = frequency + 30
-        val p = power * 5 + 250
-        val on2 = on - 5
-        val off2 = off - 5
-        ampValue.text = "$amplitude mA"
-        freqValue.text = "$f Hz"
-        powValue.text = "$p μs"
-        onSetValue.text = "$on2"
-        offSetValue.text = "$off2"
+        val stepTiltThreshold = stepTiltThreshold
+        val stepTiltRateThreshold = stepTiltRateThreshold
+        val lockTiltThreshold = lockTiltThreshold
+        val lockKneeAngleThreshold = lockKneeAngleThreshold
+        val lockKneeAngleRateThreshold = lockKneeAngleRateThreshold
+        val lockTime = lockTime
+
+        stepTiltThresholdValue.text = "$stepTiltThreshold mA"
+        stepTiltRateThresholdValue.text = "$stepTiltRateThreshold Hz"
+        lockTiltThresholdValue.text = "$lockTiltThreshold μs"
+        lockKneeAngleThresholdValue.text = "$lockKneeAngleThreshold"
+        lockKneeAngleRateThresholdValue.text = "$lockKneeAngleRateThreshold"
+        lockTimeValue.text = "$lockTime"
 
         // Launch a coroutine to save the values
         lifecycleScope.launch {
-            saveValue(this@MainActivity, "amplitude", amplitude.toString())
-            saveValue(this@MainActivity, "frequency", f.toString())
-            saveValue(this@MainActivity, "power", p.toString())
-            saveValue(this@MainActivity, "on", on2.toString())
-            saveValue(this@MainActivity, "off", off2.toString())
+            saveValue(this@MainActivity, "stepTiltThreshold", stepTiltThreshold.toString())
+            saveValue(this@MainActivity, "stepTiltRateThreshold", stepTiltRateThreshold.toString())
+            saveValue(this@MainActivity, "lockTiltThreshold", lockTiltThreshold.toString())
+            saveValue(this@MainActivity, "lockKneeAngleThreshold", lockKneeAngleThreshold.toString())
+            saveValue(this@MainActivity, "lockKneeAngleRateThreshold", lockKneeAngleRateThreshold.toString())
+            saveValue(this@MainActivity, "lockTime", lockTime.toString())
         }
 
         val json =
-            "{${amplitude},${f},${p},${on2},${off2}}"
+            "{${stepTiltThreshold},${stepTiltRateThreshold},${lockTiltThreshold},${lockKneeAngleThreshold},${lockKneeAngleRateThreshold},${lockTime}}"
         Log.i(TAG, "Sending: $json")
         sendMessage(json)
         // You would also update the SeekBars' progress here if needed

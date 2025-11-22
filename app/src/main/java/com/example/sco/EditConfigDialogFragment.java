@@ -1,5 +1,6 @@
 package com.example.sco;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,20 +16,23 @@ public class EditConfigDialogFragment extends DialogFragment {
 
     // Keep the interface the same
     public interface EditConfigDialogListener {
-        void onFinishEditDialog(int amplitude, int frequency, int power, int on, int off);
+        void onFinishEditDialog(int stepTiltThreshold, int stepTiltRateThreshold, int lockTiltThreshold, int lockKneeAngleThreshold, int lockKneeAngleRateThreshold, int lockTime);
     }
 
-    private SeekBar ampBar;
-    private TextView ampValue;
-    private SeekBar freqBar;
-    private TextView freqValue;
-    private SeekBar powBar;
-    private TextView powValue;
-    private SeekBar onBar;
-    private TextView onValue;
-    private SeekBar offBar;
-    private TextView offValue;
+    private SeekBar stepTiltThreshold;
+    private TextView stepTiltThresholdValue;
+    private SeekBar stepTiltRateThreshold;
+    private TextView stepTiltRateThresholdValue;
+    private SeekBar lockTiltThreshold;
+    private TextView lockTiltThresholdValue;
+    private SeekBar lockKneeAngleThreshold;
+    private TextView lockKneeAngleThresholdValue;
+    private SeekBar lockKneeAngleRateThreshold;
+    private TextView lockKneeAngleRateThresholdValue;
+    private SeekBar lockTime;
+    private TextView lockTimeValue;
 
+    @SuppressLint("DefaultLocale")
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -36,17 +40,22 @@ public class EditConfigDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_edit_config, null);
 
-        // --- Find views from the new dialog layout ---
-        ampBar = view.findViewById(R.id.dialogAmpBar);
-        ampValue = view.findViewById(R.id.dialogAmpValue);
-        freqBar = view.findViewById(R.id.dialogFreqBar);
-        freqValue = view.findViewById(R.id.dialogFreqValue);
-        powBar = view.findViewById(R.id.dialogPowBar);
-        powValue = view.findViewById(R.id.dialogPowValue);
-        onBar = view.findViewById(R.id.dialogOnSetBar);
-        onValue = view.findViewById(R.id.dialogOnSetValue);
-        offBar = view.findViewById(R.id.dialogOffSetBar);
-        offValue = view.findViewById(R.id.dialogOffSetValue);
+        //Step Initiaion Thresholds
+        stepTiltThreshold = view.findViewById(R.id.dialogStepTiltThreshold);
+        stepTiltThresholdValue = view.findViewById(R.id.dialogStepTiltThresholdValue);
+        stepTiltRateThreshold = view.findViewById(R.id.dialogStepTiltRateThreshold);
+        stepTiltRateThresholdValue = view.findViewById(R.id.dialogStepTiltRateThresholdValue);
+
+        //Knee Lock Thresholds
+        lockTiltThreshold = view.findViewById(R.id.dialogLockTiltThreshold);
+        lockTiltThresholdValue = view.findViewById(R.id.dialogLockTiltThresholdValue);
+        lockKneeAngleThreshold = view.findViewById(R.id.dialogLockKneeAngleThreshold);
+        lockKneeAngleThresholdValue = view.findViewById(R.id.dialogLockKneeAngleThresholdValue);
+        lockKneeAngleRateThreshold = view.findViewById(R.id.dialogLockKneeAngleRateThreshold);
+        lockKneeAngleRateThresholdValue = view.findViewById(R.id.dialogLockKneeAngleRateThresholdValue);
+        lockTime = view.findViewById(R.id.dialogLockTime);
+        lockTimeValue = view.findViewById(R.id.dialogLockTimeValue);
+
 
         // --- Set up SeekBar listeners to update the text views ---
         setupSeekBarListeners();
@@ -54,26 +63,31 @@ public class EditConfigDialogFragment extends DialogFragment {
         // --- Retrieve and display current values passed from the activity ---
         Bundle args = getArguments();
         if (args != null) {
-            int currentAmplitude = args.getInt("amplitude");
-            int currentFrequency = args.getInt("frequency");
-            int currentPower = args.getInt("power");
-            int currentOn = args.getInt("on");
-            int currentOff = args.getInt("off");
+            int currentStepTiltThreshold = args.getInt("stepTiltThreshold");
+            int currentStepTiltRateThreshold = args.getInt("stepTiltRateThreshold");
 
-            ampBar.setProgress(currentAmplitude);
-            ampValue.setText(String.format("%dmA", currentAmplitude));
+            int currentLockTiltThreshold = args.getInt("lockTiltThreshold");
+            int currentLockKneeAngleThreshold = args.getInt("lockKneeAngleThreshold");
+            int currentLockKneeAngleRateThreshold = args.getInt("lockKneeAngleRateThreshold");
+            int currentLockTime = args.getInt("lockTime");
+//TODO Write Equations for these values
+            stepTiltThreshold.setProgress(currentStepTiltThreshold);
+            stepTiltThresholdValue.setText(String.format("%ddeg", currentStepTiltThreshold));
 
-            freqBar.setProgress(currentFrequency - 30);
-            freqValue.setText(String.format("%dHz", currentFrequency));
+            stepTiltRateThreshold.setProgress(currentStepTiltRateThreshold);
+            stepTiltRateThresholdValue.setText(String.format("%ddeg/sec", currentStepTiltRateThreshold));
 
-            powBar.setProgress((currentPower - 250)/5);
-            powValue.setText(String.format("%dHz", currentPower));
+            lockTiltThreshold.setProgress(currentLockTiltThreshold);
+            lockTiltThresholdValue.setText(String.format("%ddeg", currentLockTiltThreshold));
 
-            onBar.setProgress(currentOn + 5);
-            onValue.setText(String.format("%d", currentOn));
+            lockKneeAngleThreshold.setProgress(currentLockKneeAngleThreshold);
+            lockKneeAngleThresholdValue.setText(String.format("%ddeg", currentLockKneeAngleThreshold));
 
-            offBar.setProgress(currentOff + 5);
-            offValue.setText(String.format("%d", currentOff));
+            lockKneeAngleRateThreshold.setProgress(currentLockKneeAngleRateThreshold);
+            lockKneeAngleRateThresholdValue.setText(String.format("%ddeg/sec", currentLockKneeAngleRateThreshold));
+
+            lockTime.setProgress(currentLockTime);
+            lockTimeValue.setText(String.format("%dms", currentLockTime));
         }
 
         // --- Build the dialog ---
@@ -83,7 +97,7 @@ public class EditConfigDialogFragment extends DialogFragment {
                     // Send the final progress values back to the activity
                     EditConfigDialogListener listener = (EditConfigDialogListener) getActivity();
                     if (listener != null) {
-                        listener.onFinishEditDialog(ampBar.getProgress(), freqBar.getProgress(), powBar.getProgress(), onBar.getProgress(), offBar.getProgress());
+                        listener.onFinishEditDialog(stepTiltThreshold.getProgress(), stepTiltRateThreshold.getProgress(), lockTiltThreshold.getProgress(), lockKneeAngleThreshold.getProgress(), lockKneeAngleRateThreshold.getProgress(), lockTime.getProgress());
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> {
@@ -94,12 +108,12 @@ public class EditConfigDialogFragment extends DialogFragment {
 
         return builder.create();
     }
-
+//TODO equations for these functions
     private void setupSeekBarListeners() {
-        ampBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        stepTiltThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                ampValue.setText(String.format("%dmA", progress));
+                stepTiltThresholdValue.setText(String.format("%ddeg", progress));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { /* Not needed */ }
@@ -107,11 +121,11 @@ public class EditConfigDialogFragment extends DialogFragment {
             public void onStopTrackingTouch(SeekBar seekBar) { /* Not needed */ }
         });
 
-        freqBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        stepTiltRateThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int f = progress + 30;
-                freqValue.setText(String.format("%dHz", f));
+                int f = progress;
+                stepTiltRateThresholdValue.setText(String.format("%ddeg/sec", f));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { /* Not needed */ }
@@ -119,11 +133,11 @@ public class EditConfigDialogFragment extends DialogFragment {
             public void onStopTrackingTouch(SeekBar seekBar) { /* Not needed */ }
         });
 
-        powBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        lockTiltThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int p = (progress * 5) + 250;
-                powValue.setText(String.format("%dHz", p));
+                int p = (progress);
+                lockTiltThresholdValue.setText(String.format("%ddeg", p));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { /* Not needed */ }
@@ -131,11 +145,11 @@ public class EditConfigDialogFragment extends DialogFragment {
             public void onStopTrackingTouch(SeekBar seekBar) { /* Not needed */ }
         });
 
-        onBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        lockKneeAngleThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int o = (progress - 5);
-                onValue.setText(String.format("%d", o));
+                int o = (progress);
+                lockKneeAngleThresholdValue.setText(String.format("%ddeg", o));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { /* Not needed */ }
@@ -143,11 +157,23 @@ public class EditConfigDialogFragment extends DialogFragment {
             public void onStopTrackingTouch(SeekBar seekBar) { /* Not needed */ }
         });
 
-        offBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        lockKneeAngleRateThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int o = (progress - 5);
-                offValue.setText(String.format("%d", o));
+                int o = (progress);
+                lockKneeAngleRateThresholdValue.setText(String.format("%ddeg/sec", o));
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { /* Not needed */ }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { /* Not needed */ }
+        });
+
+        lockTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int o = (progress);
+                lockTimeValue.setText(String.format("%dms", o));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) { /* Not needed */ }
