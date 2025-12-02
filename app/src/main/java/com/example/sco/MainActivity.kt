@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
     private lateinit var stimStatusLayout: LinearLayout
     private lateinit var stimStatusText: TextView
 
-    private lateinit var rotationImage: ImageView
+    private lateinit var thighTiltValue: TextView
+    private lateinit var kneeAngleValue: TextView
 
 
     //Values
@@ -81,10 +82,12 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
 
         stimStatusLayout = findViewById(R.id.stimStatusLayout)
         stimStatusText = findViewById(R.id.StimStatusText)
-        stimStatusText.text = "STIM OFF"
+        stimStatusText.text = "🔓 Unlocked"
         stimStatusLayout.setBackgroundColor(Color.parseColor("#FF0000")) // Green
 
-        rotationImage = findViewById(R.id.rotationImage)
+        thighTiltValue = findViewById(R.id.thighTiltValue)
+        kneeAngleValue = findViewById(R.id.kneeAngleValue)
+
 
 
         editConfigButton = findViewById(R.id.editConfigButton)
@@ -163,10 +166,10 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
         // Update the TextViews in MainActivity with the new values
         val stepTiltThreshold = stepTiltThreshold
         val stepTiltRateThreshold = stepTiltRateThreshold
-        val lockTiltThreshold = lockTiltThreshold
+        val lockTiltThreshold = lockTiltThreshold - 20
         val lockKneeAngleThreshold = lockKneeAngleThreshold
         val lockKneeAngleRateThreshold = lockKneeAngleRateThreshold
-        val lockTime = lockTime
+        val lockTime = lockTime + 500
 
         stepTiltThresholdValue.text = "$stepTiltThreshold deg"
         stepTiltRateThresholdValue.text = "$stepTiltRateThreshold deg/sec"
@@ -250,10 +253,10 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
 
         Log.i(TAG, "Bluetooth adapter found: ${adapter.name}")
 
-        val device = adapter.bondedDevices.firstOrNull { it.name == "FES" }
+        val device = adapter.bondedDevices.firstOrNull { it.name == "SCO" }
         if (device == null) {
-            Log.w(TAG, "FES not paired")
-            statusText.text = "FES not paired"
+            Log.w(TAG, "SCO not paired")
+            statusText.text = "SCO not paired"
             return
         }
 
@@ -372,25 +375,33 @@ class MainActivity : AppCompatActivity(), EditConfigDialogFragment.EditConfigDia
     private fun processCompleteMessage(message: String) {
         when {
             // Case 1: Handle STIM ON message
-            message == "T" -> {
-                Log.i(TAG, "Stimulation is ON")
+            message == "L1" -> {
+                Log.i(TAG, "Knee is locked")
                 stimStatusLayout.setBackgroundColor(Color.parseColor("#00FF00")) // Green
-                stimStatusText.text = "STIM ON"
+                stimStatusText.text = "🔒 Locked"
             }
 
             // Case 2: Handle STIM OFF message
-            message == "F" -> {
-                Log.i(TAG, "Stimulation is OFF")
+            message == "L0" -> {
+                Log.i(TAG, "Knee is unlocked")
                 stimStatusLayout.setBackgroundColor(Color.parseColor("#FF0000")) // Red
-                stimStatusText.text = "STIM OFF"
+                stimStatusText.text = "🔓 Unlocked"
             }
 
-            // Case 3: Handle ANGLE message (e.g., "A90", "A180.5")
-            message.startsWith("A") -> {
+            // Case 3: Handle THIGH ANGLE message (e.g., "T90", "T180.5")
+            message.startsWith("T") -> {
                 val angleString = message.substring(1)
                 val angle = angleString.toFloatOrNull() ?: 0.0f
-                rotationImage.rotation = angle // Set rotation directly
+                thighTiltValue.text = "$angle°"
                 Log.d(TAG, "Angle set to: $angle")
+            }
+
+            // Case 3: Handle KNEE ANGLE message (e.g., "K90", "K180.5")
+            message.startsWith("K") -> {
+                val angleString = message.substring(1)
+                val angle = angleString.toFloatOrNull() ?: 0.0f
+                kneeAngleValue.text = "$angle°"
+                Log.d(TAG, "Knee Angle set to: $angle")
             }
 
             // Optional: Handle other messages or log unknown messages

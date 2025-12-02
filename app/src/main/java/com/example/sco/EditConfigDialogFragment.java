@@ -77,7 +77,7 @@ public class EditConfigDialogFragment extends DialogFragment {
             stepTiltRateThreshold.setProgress(currentStepTiltRateThreshold);
             stepTiltRateThresholdValue.setText(String.format("%ddeg/sec", currentStepTiltRateThreshold));
 
-            lockTiltThreshold.setProgress(currentLockTiltThreshold);
+            lockTiltThreshold.setProgress(currentLockTiltThreshold + 20);
             lockTiltThresholdValue.setText(String.format("%ddeg", currentLockTiltThreshold));
 
             lockKneeAngleThreshold.setProgress(currentLockKneeAngleThreshold);
@@ -86,7 +86,7 @@ public class EditConfigDialogFragment extends DialogFragment {
             lockKneeAngleRateThreshold.setProgress(currentLockKneeAngleRateThreshold);
             lockKneeAngleRateThresholdValue.setText(String.format("%ddeg/sec", currentLockKneeAngleRateThreshold));
 
-            lockTime.setProgress(currentLockTime);
+            lockTime.setProgress(currentLockTime - 500);
             lockTimeValue.setText(String.format("%dms", currentLockTime));
         }
 
@@ -136,7 +136,7 @@ public class EditConfigDialogFragment extends DialogFragment {
         lockTiltThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int p = (progress);
+                int p = progress - 20;
                 lockTiltThresholdValue.setText(String.format("%ddeg", p));
             }
             @Override
@@ -172,7 +172,7 @@ public class EditConfigDialogFragment extends DialogFragment {
         lockTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int o = (progress);
+                int o = progress + 500;
                 lockTimeValue.setText(String.format("%dms", o));
             }
             @Override

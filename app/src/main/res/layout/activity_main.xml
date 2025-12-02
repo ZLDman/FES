@@ -80,7 +80,7 @@
                         android:id="@+id/dialogStepTiltThreshold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tilt Threshold"
+                        android:text="Thigh Tilt"
                         android:textSize="16sp"
                         android:textColor="#333"
                         android:layout_centerVertical="true"/>
@@ -105,7 +105,7 @@
                         android:id="@+id/dialogStepTiltRateThreshold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tilt Rate Threshold"
+                        android:text="Thigh Tilt Rate"
                         android:textSize="16sp"
                         android:textColor="#333"
                         android:layout_centerVertical="true"/>
@@ -162,7 +162,7 @@
                             android:id="@+id/dialogLockTiltThreshold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tilt Thresh"
+                            android:text="Thigh Tilt"
                             android:textSize="16sp"
                             android:textColor="#333"/>
                         <TextView
@@ -182,7 +182,7 @@
                             android:id="@+id/dialogLockKneeAngleThreshold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Knee Angle Thresh"
+                            android:text="Knee Angle"
                             android:textSize="16sp"
                             android:textColor="#333"/>
                         <TextView
@@ -202,7 +202,7 @@
                             android:id="@+id/dialogLockKneeAngleRateThreshold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Knee Angle Rate Thresh"
+                            android:text="Knee Angle Rate"
                             android:textSize="16sp"
                             android:textColor="#333"/>
                         <TextView
@@ -222,7 +222,7 @@
                             android:id="@+id/dialogLockTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lock Time"
+                            android:text="Lock Timeout"
                             android:textSize="16sp"
                             android:textColor="#333"/>
                         <TextView
@@ -262,7 +262,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Stim Off"
+                    android:text="🔓 Unlocked"
                     android:textColor="#000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -288,18 +288,63 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Stimulation Angle"
+                    android:text="Leg Angles"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#000"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="8dp"/>
 
-                <ImageView
-                    android:id="@+id/rotationImage"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:src="@drawable/fes_circut"
-                    android:contentDescription="Rotation indicator" />
+                <!-- Thigh Tilt -->
+                <RelativeLayout
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thigh Tilt"
+                        android:textSize="16sp"
+                        android:textColor="#333"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"/>
+
+                    <TextView
+                        android:id="@+id/thighTiltValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0°"
+                        android:textSize="16sp"
+                        android:textColor="#333"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+
+                <!-- Knee Angle -->
+                <RelativeLayout
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Knee Angle"
+                        android:textSize="16sp"
+                        android:textColor="#333"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"/>
+
+                    <TextView
+                        android:id="@+id/kneeAngleValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0°"
+                        android:textSize="16sp"
+                        android:textColor="#333"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
